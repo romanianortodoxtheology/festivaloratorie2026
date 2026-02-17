@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propunere Gazdă: Parohia Berna</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #F3F4F6;
+            color: #1F2937;
+        }
+        
+        /* Chart Container Styling Rules */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Limit max width for readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px; /* Base height */
+            max-height: 500px;
+        }
+        
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Timeline CSS Elements */
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #D1D5DB;
+            transform: translateX(-50%);
+            z-index: 0;
+        }
+        
+        .timeline-step {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+    
+    <!-- Configurare Tailwind pentru culori personalizate -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-blue': '#2563EB',
+                        'brand-orange': '#F59E0B',
+                        'brand-dark': '#1E3A8A',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- 
+        PALETTE: Energetic & Professional
+        Blue: #2563EB (Trust, Core)
+        Orange: #F59E0B (Highlight, Energy)
+        Dark Blue: #1E3A8A (Text, Structure)
+    -->
+    <!-- 
+        NARRATIVE PLAN:
+        1. Intro: Berna as the central hub.
+        2. Geo Analysis: Scatter plot simulating Swiss map relative to Bern.
+        3. Logistics Data: Bar chart showing drive times/distances.
+        4. Accessibility Flow: HTML Timeline of train access.
+        5. Venue Stats: Donut chart for capacity + Cards for facilities.
+        6. Conclusion: Summary of benefits.
+        NO SVG USED. NO MERMAID USED.
+    -->
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header Section -->
+    <header class="bg-brand-blue text-white shadow-lg">
+        <div class="container mx-auto px-4 py-12 text-center">
+            <h1 class="text-4xl md:text-6xl font-black mb-4 uppercase tracking-wide">Berna: Centrul Elveției</h1>
+            <p class="text-xl md:text-2xl font-light max-w-3xl mx-auto">
+                De ce Parohia "Sf. M. Mc. Gheorghe" din Berna este locația ideală pentru 
+                <span class="font-bold text-brand-orange">FFESTIVAL CONCURS DE ORATORIE "SF. IOAN GURĂ DE AUR"</span>
+            </p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 space-y-12">
+
+        <!-- SECTION 1: Geography & Central Position -->
+        <section class="bg-white rounded-xl shadow-md p-6 md:p-8">
+            <div class="mb-6 border-l-4 border-brand-orange pl-4">
+                <h2 class="text-3xl font-bold text-brand-dark mb-2">Poziționare Strategică</h2>
+                <p class="text-gray-600">
+                    Situată în inima geografică a Elveției, Berna oferă cel mai echilibrat punct de întâlnire pentru majoritatea parohiilor din Protopopiatul Elveției. Distanțele sunt optimizate pentru a reduce timpul de călătorie al participanților din toate colțurile țării.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <!-- Text / Context -->
+                <div class="order-2 md:order-1">
+                    <h3 class="text-xl font-bold mb-4 text-brand-blue">Harta Parohiilor (Distribuție Relativă)</h3>
+                    <p class="mb-4 text-sm text-gray-500">
+                        Graficul alăturat ilustrează poziția parohiilor majore față de Berna (Centru 0,0). Se observă cum Berna acționează ca un punct de convergență natural între Zurich, Geneva, Basel și Lausanne.
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 bg-brand-orange rounded-full mr-2"></span>
+                            <span class="font-bold">Berna:</span> Punctul central (Gazdă)
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 bg-brand-blue rounded-full mr-2"></span>
+                            <span class="font-bold">Parohii Nord-Est:</span> Zurich, St. Gallen, Basel
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 bg-brand-blue rounded-full mr-2"></span>
+                            <span class="font-bold">Parohii Vest:</span> Geneva, Lausanne, Neuchatel
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Visualization: Scatter Plot Map -->
+                <div class="order-1 md:order-2 bg-gray-50 rounded-lg p-2 border border-gray-200">
+                    <div class="chart-container">
+                        <canvas id="swissMapChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Travel Times & Distances -->
+        <section class="bg-white rounded-xl shadow-md p-6 md:p-8">
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-brand-dark mb-2">Timp și Distanță</h2>
+                <p class="text-gray-600">
+                    O analiză comparativă a timpilor de condus și a distanțelor. Pentru majoritatea participanților, călătoria se încadrează într-un interval confortabil de 1h - 1h 30m.
+                </p>
+            </div>
+
+            <!-- Visualization: Horizontal Bar Chart -->
+            <div class="w-full bg-white rounded-lg p-4">
+                <div class="chart-container" style="max-height: 600px; height: 500px;">
+                    <canvas id="distanceChart"></canvas>
+                </div>
+                <p class="mt-4 text-center text-sm text-gray-500 italic">
+                    * Datele reprezintă distanța rutieră estimată și timpul mediu de condus fără trafic intens.
+                </p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Logistics & Accessibility (Process Flow) -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Left Column: Train Access -->
+            <div class="md:col-span-1 bg-brand-dark text-white rounded-xl shadow-md p-6 relative overflow-hidden">
+                <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-brand-orange rounded-full opacity-20"></div>
+                <h3 class="text-2xl font-bold mb-6 flex items-center">
+                    <span class="text-3xl mr-2">&#128646;</span> Acces Tren
+                </h3>
+                
+                <!-- Vertical Timeline (Custom HTML/Tailwind) -->
+                <div class="relative pl-4 space-y-8">
+                    <!-- Line -->
+                    <div class="absolute left-[27px] top-2 bottom-2 w-1 bg-blue-500 opacity-50"></div>
+                    
+                    <!-- Step 1 -->
+                    <div class="relative flex items-start z-10">
+                        <div class="bg-white text-brand-blue rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg flex-shrink-0 mt-1">1</div>
+                        <div class="ml-4">
+                            <h4 class="font-bold text-lg">Gara Berna (HB)</h4>
+                            <p class="text-blue-200 text-sm">Nod feroviar central</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2 -->
+                    <div class="relative flex items-start z-10">
+                        <div class="bg-brand-orange text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg flex-shrink-0 mt-1">2</div>
+                        <div class="ml-4">
+                            <h4 class="font-bold text-lg">Doar 2 Stații</h4>
+                            <p class="text-blue-200 text-sm">~4-5 minute călătorie cu RBS</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="relative flex items-start z-10">
+                        <div class="bg-white text-brand-blue rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg flex-shrink-0 mt-1">3</div>
+                        <div class="ml-4">
+                            <h4 class="font-bold text-lg">Stația Tiefenau</h4>
+                            <p class="text-blue-200 text-sm">Coborâre directă</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative flex items-start z-10">
+                        <div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold shadow-lg flex-shrink-0 mt-1">&#10003;</div>
+                        <div class="ml-4">
+                            <h4 class="font-bold text-lg">1 Minut pe jos</h4>
+                            <p class="text-blue-200 text-sm">Până la Parohia Berna</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Parking & Car Access -->
+            <div class="md:col-span-2 bg-white rounded-xl shadow-md p-6">
+                <h3 class="text-2xl font-bold mb-4 text-brand-dark flex items-center">
+                    <span class="text-3xl mr-2">&#128663;</span> Facilități pentru Șoferi
+                </h3>
+                <p class="text-gray-600 mb-6">
+                    Spre deosebire de locațiile centrale din orașele mari unde parcarea este o problemă majoră, parohia noastră oferă soluții excelente.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <div class="text-brand-orange text-4xl mb-2">&#84;</div>
+                        <h4 class="font-bold text-lg mb-1">Parcare Privată</h4>
+                        <p class="text-sm text-gray-500">Parcare mare disponibilă cu pana la 30 de locuri chiar în curtea bisericii pentru participanți.</p>
+                    </div>
+                    <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                        <div class="text-brand-blue text-4xl mb-2">&#9873;</div>
+                        <h4 class="font-bold text-lg mb-1">Împrejurimi</h4>
+                        <p class="text-sm text-gray-500">Locuri suplimentare disponibile în zona "Zona Alba" din imediata apropiere (mai puțin de 1 minut pe jos).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Venue Capacity & Features -->
+        <section class="bg-white rounded-xl shadow-md p-6 md:p-8">
+            <div class="mb-8 text-center">
+                <h2 class="text-3xl font-bold text-brand-dark">Infrastructura Festivalului</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto mt-2">
+                    O sală pregătită să găzduiască un eveniment de anvergură, asigurând confortul spectatorilor și calitatea actului artistic.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                
+                <!-- Visualization: Donut Chart for Capacity -->
+                <div class="flex flex-col items-center">
+                    <div class="chart-container" style="height: 300px; max-width: 300px;">
+                        <canvas id="capacityChart"></canvas>
+                    </div>
+                    <p class="text-center mt-4 font-bold text-brand-dark text-lg">Capacitate Totală: 200+ Locuri</p>
+                </div>
+
+                <!-- Feature Grid -->
+                <div class="grid grid-cols-1 gap-4">
+                    <!-- Feature 1 -->
+                    <div class="flex items-start p-4 bg-blue-50 rounded-lg border-l-4 border-brand-blue">
+                        <div class="text-3xl mr-4">&#127908;</div>
+                        <div>
+                            <h4 class="font-bold text-brand-dark text-lg">Sistem Audio Pro</h4>
+                            <p class="text-sm text-gray-600">Dotare completă cu microfoane și sonorizare pentru a pune în valoare vocea fiecărui orator.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Feature 2 -->
+                    <div class="flex items-start p-4 bg-orange-50 rounded-lg border-l-4 border-brand-orange">
+                        <div class="text-3xl mr-4">&#127917;</div>
+                        <div>
+                            <h4 class="font-bold text-brand-dark text-lg">Scenă Dedicată</h4>
+                            <p class="text-sm text-gray-600">Spațiu amenajat special pentru desfășurarea concursului, oferind vizibilitate maximă.</p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 3 -->
+                    <div class="flex items-start p-4 bg-gray-50 rounded-lg border-l-4 border-gray-400">
+                        <div class="text-3xl mr-4">&#128101;</div>
+                        <div>
+                            <h4 class="font-bold text-brand-dark text-lg">Spațiu Generos</h4>
+                            <p class="text-sm text-gray-600">Sala mare permite o bună organizare a publicului și a juriului.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA / Footer -->
+        <footer class="bg-brand-dark text-white rounded-xl p-8 text-center shadow-lg">
+            <h2 class="text-3xl font-bold mb-4">Alegeți Berna pentru Succesul Festivalului</h2>
+            <p class="text-blue-100 mb-8 max-w-2xl mx-auto">
+                Poziția centrală, accesul facil și facilitățile excelente fac din Parohia „Sfântul Mare Mucenic Gheorghe” din Berna gazda perfectă pentru acest eveniment
+            </p>
+            <div class="inline-block bg-brand-orange text-white font-bold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition-transform cursor-pointer">
+                Vă așteptăm cu drag!
+            </div>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- UTILITY: Label Splitting Function for Chart.js ---
+        // Ensures labels do not exceed ~16 chars per line
+        function splitLabel(label) {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if (currentLine.length + 1 + words[i].length <= 16) {
+                    currentLine += ' ' + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // --- COMMON CHART OPTIONS ---
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    backgroundColor: 'rgba(30, 58, 138, 0.9)', // Brand Dark
+                    titleFont: { size: 14, weight: 'bold' },
+                    bodyFont: { size: 13 },
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels ? item.chart.data.labels[item.dataIndex] : '';
+                            // For scatter charts, labels might be in the dataset data object
+                            if (!label && item.raw && item.raw.label) label = item.raw.label;
+                            
+                            if (Array.isArray(label)) {
+                                return label.join(' ');
+                            } else {
+                                return label;
+                            }
+                        }
+                    }
+                },
+                legend: {
+                    labels: {
+                        font: { family: "'Roboto', sans-serif", size: 12 },
+                        color: '#374151'
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: SWISS MAP SCATTER PLOT ---
+        const mapCtx = document.getElementById('swissMapChart').getContext('2d');
+        
+        // Data approximation for relative coordinates (Bern at 0,0)
+        // X = West/East, Y = North/South
+        const cityData = [
+            { x: 0, y: 0, label: 'Berna (Gazdă)', r: 15, bg: '#F59E0B' }, // Bern (Orange, Big)
+            { x: 2.2, y: 1.8, label: 'Zurich (122km)', r: 8, bg: '#2563EB' }, // NE
+            { x: 1.8, y: 2.5, label: 'Basel (98km)', r: 8, bg: '#2563EB' }, // N
+            { x: -2.5, y: -1.5, label: 'Geneva (158km)', r: 8, bg: '#2563EB' }, // SW
+            { x: -1.5, y: -1.0, label: 'Lausanne (101km)', r: 8, bg: '#2563EB' }, // WSW
+            { x: 3.5, y: 1.5, label: 'St. Gallen (200km)', r: 8, bg: '#2563EB' }, // Far E
+            { x: 2.5, y: -3.5, label: 'Lugano (260km)', r: 8, bg: '#2563EB' }, // S
+            { x: 3.8, y: -1.5, label: 'Chur (198km)', r: 8, bg: '#2563EB' }, // SE
+            { x: -0.8, y: -0.5, label: 'Fribourg (34km)', r: 8, bg: '#60A5FA' }, // Close SW
+            { x: -1.2, y: 0.8, label: 'Neuchatel (50km)', r: 8, bg: '#60A5FA' }  // Close W
+        ];
+
+        new Chart(mapCtx, {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: 'Parohii',
+                    data: cityData,
+                    backgroundColor: cityData.map(d => d.bg),
+                    borderColor: '#ffffff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    x: {
+                        display: true,
+                        title: { display: true, text: 'Vest <---> Est' },
+                        grid: { display: true, color: '#e5e7eb' },
+                        ticks: { display: false } // Hide numbers for abstract map feel
+                    },
+                    y: {
+                        display: true,
+                        title: { display: true, text: 'Sud <---> Nord' },
+                        grid: { display: true, color: '#e5e7eb' },
+                        ticks: { display: false }
+                    }
+                },
+                plugins: {
+                    ...commonOptions.plugins,
+                    tooltip: {
+                        ...commonOptions.plugins.tooltip,
+                        callbacks: {
+                            label: function(context) {
+                                return context.raw.label;
+                            }
+                        }
+                    },
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // --- CHART 2: DISTANCE & TIME BAR CHART ---
+        const distCtx = document.getElementById('distanceChart').getContext('2d');
+        
+        // Data: City, Km, Minutes
+        const rawDistData = [
+            { city: 'Fribourg', km: 34, min: 25 },
+            { city: 'Neuchatel', km: 50, min: 40 },
+            { city: 'Basel', km: 98, min: 65 },
+            { city: 'Lausanne', km: 101, min: 70 },
+            { city: 'Zurich', km: 122, min: 85 },
+            { city: 'Lugano', km: 260, min: 180 }, // Adjusted slightly for real driving
+            { city: 'Geneva', km: 158, min: 110 },
+            { city: 'St. Gallen', km: 200, min: 125 },
+            { city: 'Chur', km: 198, min: 130 }
+        ];
+
+        // Sort by Time (closest first)
+        rawDistData.sort((a, b) => a.min - b.min);
+
+        const labels = rawDistData.map(d => splitLabel(d.city));
+        const kmData = rawDistData.map(d => d.km);
+        const minData = rawDistData.map(d => d.min);
+
+        new Chart(distCtx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Timp (Minute)',
+                        data: minData,
+                        backgroundColor: '#F59E0B', // Orange
+                        borderRadius: 4,
+                        order: 1
+                    },
+                    {
+                        label: 'Distanță (km)',
+                        data: kmData,
+                        backgroundColor: '#93C5FD', // Light Blue
+                        borderRadius: 4,
+                        hidden: true // Hidden by default to keep chart clean, toggleable in legend
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal Bar
+                ...commonOptions,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        grid: { color: '#f3f4f6' },
+                        title: { display: true, text: 'Minute de Condus' }
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // --- CHART 3: CAPACITY DONUT ---
+        const capCtx = document.getElementById('capacityChart').getContext('2d');
+        
+        new Chart(capCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Locuri Disponibile', 'Scenă & Logistică'],
+                datasets: [{
+                    data: [200, 30], // Arbitrary split to show "Full" capacity visually
+                    backgroundColor: [
+                        '#2563EB', // Brand Blue (Main capacity)
+                        '#F59E0B'  // Brand Orange (Accent)
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                ...commonOptions,
+                cutout: '70%',
+                plugins: {
+                    ...commonOptions.plugins,
+                    legend: { display: false },
+                    tooltip: { enabled: false } // Disable tooltip for this simple visual
+                }
+            },
+            plugins: [{
+                id: 'textCenter',
+                beforeDraw: function(chart) {
+                    var width = chart.width,
+                        height = chart.height,
+                        ctx = chart.ctx;
+            
+                    ctx.restore();
+                    var fontSize = (height / 114).toFixed(2);
+                    ctx.font = "bold " + fontSize + "em sans-serif";
+                    ctx.textBaseline = "middle";
+                    ctx.fillStyle = "#1E3A8A";
+            
+                    var text = "200+",
+                        textX = Math.round((width - ctx.measureText(text).width) / 2),
+                        textY = height / 2;
+            
+                    ctx.fillText(text, textX, textY);
+                    
+                    var subFontSize = (height / 200).toFixed(2);
+                    ctx.font = subFontSize + "em sans-serif";
+                    ctx.fillStyle = "#6B7280";
+                    var subText = "Locuri",
+                        subTextX = Math.round((width - ctx.measureText(subText).width) / 2),
+                        subTextY = height / 1.65;
+                        
+                    ctx.fillText(subText, subTextX, subTextY);
+                    ctx.save();
+                }
+            }]
+        });
+
+    </script>
+</body>
+</html>
